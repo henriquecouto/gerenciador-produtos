@@ -1,14 +1,24 @@
 import React, { Component } from 'react'
-import NavBar from './components/Navbar'
-import Content from './components/Content'
+import {
+  BrowserRouter as Router,
+  Route,
+} from 'react-router-dom'
+import Navbar from './components/Navbar'
+import Inicio from './components/Inicio'
+import Sobre from './components/Sobre'
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <NavBar />
-        <Content />
-      </div>
+      <Router>
+        <div className="App">
+          <Navbar />
+          <div className='container'>
+            <Route exact path='/' component={Inicio} />
+            <Route exact path='/sobre' component={Sobre} />
+          </div>
+        </div>
+      </Router>
     )
   }
 }
