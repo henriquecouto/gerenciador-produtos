@@ -1,9 +1,7 @@
 import React from 'react'
 
 export default () => {
-  return(
-    <div className='container'>
+  return (
     <h1>Sobre</h1>
-    </div>
   )
 }
