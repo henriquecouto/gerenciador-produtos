@@ -1,5 +1,36 @@
 {
-  "produtos": [],
+  "produtos": [
+    {
+      "id": 1,
+      "nome": "Detergente",
+      "quantidade": 13,
+      "categoria": 1
+    },
+    {
+      "id": 2,
+      "nome": "Sabão em Pó",
+      "quantidade": 10,
+      "categoria": 1
+    },
+    {
+      "id": 3,
+      "nome": "Bolacha",
+      "quantidade": 8,
+      "categoria": 2
+    },
+    {
+      "id": 4,
+      "nome": "Vassoura",
+      "quantidade": 5,
+      "categoria": 3
+    },
+    {
+      "id": 5,
+      "nome": "Pá",
+      "quantidade": 14,
+      "categoria": 3
+    }
+  ],
   "categorias": [
     {
       "id": 1,
@@ -8,6 +39,10 @@
     {
       "id": 2,
       "nome": "Alimentos"
+    },
+    {
+      "id": 3,
+      "nome": "Utilidades"
     }
   ]
 }

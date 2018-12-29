@@ -2,6 +2,6 @@ import React from 'react'
 
 export default () => (
   <div>
-    Produtos
+    <p>Selecione uma categoria ao lado para visualizar os produtos</p>
   </div>
 )

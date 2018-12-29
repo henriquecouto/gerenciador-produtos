@@ -8,6 +8,7 @@ class Produtos extends Component {
 
   constructor(props) {
     super(props)
+    this.renderCategoria = this.renderCategoria.bind(this)
     this.state = {
       categorias: []
     }
@@ -23,10 +24,11 @@ class Produtos extends Component {
   }
 
   renderCategoria(v, k) {
+    const url = `/produtos/categoria/${v.id}`
+    const { pathname } = this.props.location
+    const active = url === pathname? 'active' : ''
     return (
-      <li key={k}>
-        <Link to={`/produtos/categoria/${v.id}`}>{v.nome}</Link>
-      </li>
+      <Link key={k} className={`list-group-item ${active}`} to={url}>{v.nome}</Link>
     )
   }
 
@@ -36,13 +38,13 @@ class Produtos extends Component {
     return (
       <div className='row'>
         <div className='col-md-2'>
-          <h3>Categorias</h3>
-          <ul>
-          {categorias.map(this.renderCategoria)}
-          </ul>
+          <h3>Categorias</h3><hr />
+          <div className="list-group" id="list-tab" role="tablist">
+            {categorias.map(this.renderCategoria)}
+          </div>
         </div>
         <div className='col-md-10'>
-          <h3>Produtos</h3>
+          <h3>Produtos</h3><hr />
           <Route exact path={match.url} component={Home} />
           <Route exact path={match.url + '/categoria/:catId'} component={Categoria} />
         </div>
