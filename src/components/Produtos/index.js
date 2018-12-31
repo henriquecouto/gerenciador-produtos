@@ -14,7 +14,7 @@ class Produtos extends Component {
     }
   }
 
-  componentDidMount() {
+  loadCategorias = () => {
     axios.get('http://localhost:3001/categorias')
       .then(res => {
         this.setState({
@@ -23,13 +23,36 @@ class Produtos extends Component {
       })
   }
 
+  
+
+  componentDidMount() {
+    this.loadCategorias()
+  }
+
   renderCategoria(v, k) {
     const url = `/produtos/categoria/${v.id}`
     const { pathname } = this.props.location
-    const active = url === pathname? 'active' : ''
+    const active = url === pathname ? 'active' : ''
     return (
       <Link key={k} className={`list-group-item ${active}`} to={url}>{v.nome}</Link>
     )
+  }
+
+  addCategoria = () => {
+    axios
+      .post('http://localhost:3001/categorias', {
+        nome: this.refs.categoria.value
+      })
+      .then(res => {
+        this.refs.categoria.value = ''
+        this.loadCategorias()
+      })
+  }
+
+  handleNewCategoria = key => {
+    if (key.keyCode === 13) {
+      this.addCategoria()
+    }
   }
 
   render() {
@@ -38,13 +61,29 @@ class Produtos extends Component {
     return (
       <div className='row'>
         <div className='col-md-2'>
-          <h3>Categorias</h3><hr />
+          <h5 style={{ marginTop: 5 }}>Categorias</h5><hr />
           <div className="list-group" id="list-tab" role="tablist">
             {categorias.map(this.renderCategoria)}
+          </div><hr />
+          <h6>Adicionar Categoria</h6> <hr />
+          <div className='form-group'>
+            <input
+              onKeyUp={this.handleNewCategoria}
+              type='text'
+              className='form-control'
+              ref='categoria'
+              placeholder='Digite o nome...'
+            />
+            <button
+              onClick={this.addCategoria}
+              type='submit'
+              style={{ marginTop: 5, width: '100%' }}
+              className='btn btn-primary'
+            >Adicionar</button>
           </div>
         </div>
         <div className='col-md-10'>
-          <h3>Produtos</h3><hr />
+          <h5 style={{ marginTop: 5 }}>Produtos</h5><hr />
           <Route exact path={match.url} component={Home} />
           <Route exact path={match.url + '/categoria/:catId'} component={Categoria} />
         </div>

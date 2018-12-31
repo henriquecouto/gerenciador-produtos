@@ -29,6 +29,12 @@
       "nome": "Pá",
       "quantidade": 14,
       "categoria": 3
+    },
+    {
+      "id": 6,
+      "nome": "Pão de Forma",
+      "quantidade": 20,
+      "categoria": 2
     }
   ],
   "categorias": [
