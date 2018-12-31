@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Link } from 'react-router-dom'
+import Octicon from 'react-octicon'
 import axios from 'axios'
 import Home from './HomeProdutos'
 import Categoria from './Categoria'
@@ -8,7 +9,6 @@ class Produtos extends Component {
 
   constructor(props) {
     super(props)
-    this.renderCategoria = this.renderCategoria.bind(this)
     this.state = {
       categorias: []
     }
@@ -23,18 +23,40 @@ class Produtos extends Component {
       })
   }
 
-  
-
   componentDidMount() {
     this.loadCategorias()
   }
 
-  renderCategoria(v, k) {
+  removeCategoria = v => {
+    axios
+      .delete('http://localhost:3001/categorias/'+v.id)
+      .then(() => this.loadCategorias())
+  }
+
+  renderCategoria = (v, k) => {
     const url = `/produtos/categoria/${v.id}`
     const { pathname } = this.props.location
     const active = url === pathname ? 'active' : ''
     return (
-      <Link key={k} className={`list-group-item ${active}`} to={url}>{v.nome}</Link>
+      <Link
+        key={k}
+        className={`
+          list-group-item 
+          ${active} 
+          list-group-item-action 
+          flex-column 
+          align-items-start
+
+          `}
+        to={url}
+      >
+        <div className='d-flex w-100 justify-content-between'>
+          <p className='mb-1'>{v.nome}</p>
+          <button className='btn btn-danger btn-sm' onClick={()=>this.removeCategoria(v)}>
+            <Octicon name='trashcan' />
+          </button>
+        </div>
+      </Link>
     )
   }
 
@@ -65,14 +87,13 @@ class Produtos extends Component {
           <div className="list-group" id="list-tab" role="tablist">
             {categorias.map(this.renderCategoria)}
           </div><hr />
-          <h6>Adicionar Categoria</h6> <hr />
           <div className='form-group'>
             <input
               onKeyUp={this.handleNewCategoria}
               type='text'
               className='form-control'
               ref='categoria'
-              placeholder='Digite o nome...'
+              placeholder='Nova categoria...'
             />
             <button
               onClick={this.addCategoria}
