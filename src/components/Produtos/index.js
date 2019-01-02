@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Link } from 'react-router-dom'
 import Octicon from 'react-octicon'
-import axios from 'axios'
 import Home from './HomeProdutos'
 import Categoria from './Categoria'
 
@@ -10,27 +9,24 @@ class Produtos extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      categorias: []
+      editingCategoria: ''
     }
   }
 
-  loadCategorias = () => {
-    axios.get('http://localhost:3001/categorias')
-      .then(res => {
-        this.setState({
-          categorias: res.data
-        })
-      })
-  }
-
   componentDidMount() {
-    this.loadCategorias()
+    this.props.loadCategorias()
   }
 
-  removeCategoria = v => {
-    axios
-      .delete('http://localhost:3001/categorias/'+v.id)
-      .then(() => this.loadCategorias())
+  setEditCategoria = (categoria) => {
+    this.setState({
+      editingCategoria: categoria.id
+    })
+  }
+
+  cancelEditing = () => {
+    this.setState({
+      editingCategoria: ''
+    })
   }
 
   renderCategoria = (v, k) => {
@@ -38,37 +34,63 @@ class Produtos extends Component {
     const { pathname } = this.props.location
     const active = url === pathname ? 'active' : ''
     return (
-      <Link
-        key={k}
-        className={`
-          list-group-item 
-          ${active} 
-          list-group-item-action 
-          flex-column 
-          align-items-start
+      <React.Fragment key={k}>
+        {this.state.editingCategoria === v.id &&
+          <div className='list-group-item list-group-item-action flex-column align-items-start p-2'>
+            <div className='d-flex w-100 justify-content-between' >
+              <input
+                onKeyUp={this.handleEditCategoria}
+                defaultValue={v.nome}
+                type='text'
+                className='form-control form-control-sm mr-1'
+                ref={'cat-'+v.id}
+                placeholder='Novo nome...'
+              />
+              <button className='btn btn-danger btn-sm mr-1' onClick={this.cancelEditing}>
+                <Octicon name='thumbsdown' />
+              </button>
+              <button className='btn btn-primary btn-sm' onClick={this.editCategoria}>
+                <Octicon name='thumbsup' />
+              </button>
+            </div>
+          </div>
+        }
 
-          `}
-        to={url}
-      >
-        <div className='d-flex w-100 justify-content-between'>
-          <p className='mb-1'>{v.nome}</p>
-          <button className='btn btn-danger btn-sm' onClick={()=>this.removeCategoria(v)}>
-            <Octicon name='trashcan' />
-          </button>
-        </div>
-      </Link>
+        {this.state.editingCategoria !== v.id &&
+          <Link
+            className={`
+              list-group-item
+              ${active} 
+              list-group-item-action 
+              flex-column 
+              align-items-start
+              p-2
+            `}
+            to={url}
+          >
+            <div className='d-flex w-100 justify-content-between' >
+              <p className='mb-1 d-inline-block text-truncate' style={{ width: 600 }} >{v.nome}</p>
+
+              <div className='d-flex w-100 justify-content-end'>
+                <button className='btn btn-warning btn-sm mr-1' onClick={() => this.setEditCategoria(v)}>
+                  <Octicon name='pencil' />
+                </button>
+                <button className='btn btn-danger btn-sm' onClick={() => this.props.removeCategoria(v)}>
+                  <Octicon name='trashcan' />
+                </button>
+              </div>
+            </div>
+          </Link>
+        }
+      </React.Fragment>
     )
   }
 
   addCategoria = () => {
-    axios
-      .post('http://localhost:3001/categorias', {
-        nome: this.refs.categoria.value
-      })
-      .then(res => {
-        this.refs.categoria.value = ''
-        this.loadCategorias()
-      })
+    this.props.addCategoria({
+      nome: this.refs.categoria.value
+    })
+    this.refs.categoria.value = ''
   }
 
   handleNewCategoria = key => {
@@ -77,12 +99,29 @@ class Produtos extends Component {
     }
   }
 
+  editCategoria = () => {
+    this.props.editCategoria({
+      id: this.state.editingCategoria,
+      nome: this.refs['cat-'+this.state.editingCategoria].value
+    })
+    this.setState({
+      editingCategoria: ''
+    })
+  }
+
+  handleEditCategoria = key => {
+    if (key.keyCode === 27) {
+      this.cancelEditing()
+    } else if(key.keyCode === 13){
+      this.editCategoria()
+    }
+  }
+
   render() {
-    const { match } = this.props
-    const { categorias } = this.state
+    const { match, categorias } = this.props
     return (
       <div className='row'>
-        <div className='col-md-2'>
+        <div className='col-md-3'>
           <h5 style={{ marginTop: 5 }}>Categorias</h5><hr />
           <div className="list-group" id="list-tab" role="tablist">
             {categorias.map(this.renderCategoria)}
@@ -103,7 +142,7 @@ class Produtos extends Component {
             >Adicionar</button>
           </div>
         </div>
-        <div className='col-md-10'>
+        <div className='col-md-9'>
           <h5 style={{ marginTop: 5 }}>Produtos</h5><hr />
           <Route exact path={match.url} component={Home} />
           <Route exact path={match.url + '/categoria/:catId'} component={Categoria} />
