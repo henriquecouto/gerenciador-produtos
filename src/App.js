@@ -41,6 +41,10 @@ class App extends Component {
     .then(res => this.loadCategorias())
   }
 
+  addProduto = produto => {
+    this.api.addProduto(produto)
+  }
+
   render() {
     return (
       <Router>
@@ -58,6 +62,9 @@ class App extends Component {
                   removeCategoria={this.removeCategoria}
                   addCategoria={this.addCategoria}
                   editCategoria={this.editCategoria}
+
+                  addProduto={this.addProduto}
+                  editProduto={this.api.editProduto}
                 />
               )
             }} />

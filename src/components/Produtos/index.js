@@ -1,8 +1,9 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { Route, Link } from 'react-router-dom'
 import Octicon from 'react-octicon'
 import Home from './HomeProdutos'
 import Categoria from './Categoria'
+import ProdutoNovo from './ProdutoNovo'
 
 class Produtos extends Component {
 
@@ -34,18 +35,19 @@ class Produtos extends Component {
     const { pathname } = this.props.location
     const active = url === pathname ? 'active' : ''
     return (
-      <React.Fragment key={k}>
+      <Fragment key={k}>
         {this.state.editingCategoria === v.id &&
-          <div className='list-group-item list-group-item-action flex-column align-items-start p-2'>
-            <div className='d-flex w-100 justify-content-between' >
-              <input
-                onKeyUp={this.handleEditCategoria}
-                defaultValue={v.nome}
-                type='text'
-                className='form-control form-control-sm mr-1'
-                ref={'cat-'+v.id}
-                placeholder='Novo nome...'
-              />
+          <div className={`d-flex w-80 justify-content-between`} style={{ marginBottom: 3 }}>
+            <input
+              style={{ width: '100%' }}
+              onKeyUp={this.handleEditCategoria}
+              defaultValue={v.nome}
+              type='text'
+              className='list-group-item form-control-sm mr-1 p-2'
+              ref={'cat-' + v.id}
+              placeholder='Novo nome...'
+            />
+            <div className='d-flex w-20 justify-content-end'>
               <button className='btn btn-danger btn-sm mr-1' onClick={this.cancelEditing}>
                 <Octicon name='thumbsdown' />
               </button>
@@ -54,35 +56,24 @@ class Produtos extends Component {
               </button>
             </div>
           </div>
+
         }
 
         {this.state.editingCategoria !== v.id &&
-          <Link
-            className={`
-              list-group-item
-              ${active} 
-              list-group-item-action 
-              flex-column 
-              align-items-start
-              p-2
-            `}
-            to={url}
-          >
-            <div className='d-flex w-100 justify-content-between' >
-              <p className='mb-1 d-inline-block text-truncate' style={{ width: 600 }} >{v.nome}</p>
 
-              <div className='d-flex w-100 justify-content-end'>
-                <button className='btn btn-warning btn-sm mr-1' onClick={() => this.setEditCategoria(v)}>
-                  <Octicon name='pencil' />
-                </button>
-                <button className='btn btn-danger btn-sm' onClick={() => this.props.removeCategoria(v)}>
-                  <Octicon name='trashcan' />
-                </button>
-              </div>
+          <div className={`d-flex w-80 justify-content-between`} style={{ marginBottom: 3 }}>
+            <Link to={url} style={{ width: '100%' }} className={`list-group-item p-2 ${active} btn-sm mr-1`}>{v.nome}</Link>
+            <div className='d-flex w-20 justify-content-end'>
+              <button className='btn btn-warning btn-sm mr-1' onClick={() => this.setEditCategoria(v)}>
+                <Octicon name='pencil' />
+              </button>
+              <button className='btn btn-danger btn-sm' onClick={() => this.props.removeCategoria(v)}>
+                <Octicon name='trashcan' />
+              </button>
             </div>
-          </Link>
+          </div>
         }
-      </React.Fragment>
+      </Fragment>
     )
   }
 
@@ -102,7 +93,7 @@ class Produtos extends Component {
   editCategoria = () => {
     this.props.editCategoria({
       id: this.state.editingCategoria,
-      nome: this.refs['cat-'+this.state.editingCategoria].value
+      nome: this.refs['cat-' + this.state.editingCategoria].value
     })
     this.setState({
       editingCategoria: ''
@@ -112,7 +103,7 @@ class Produtos extends Component {
   handleEditCategoria = key => {
     if (key.keyCode === 27) {
       this.cancelEditing()
-    } else if(key.keyCode === 13){
+    } else if (key.keyCode === 13) {
       this.editCategoria()
     }
   }
@@ -122,7 +113,7 @@ class Produtos extends Component {
     return (
       <div className='row'>
         <div className='col-md-3'>
-          <h5 style={{ marginTop: 5 }}>Categorias</h5><hr />
+          <h4 style={{ marginTop: 5 }}>Categorias</h4><hr />
           <div className="list-group" id="list-tab" role="tablist">
             {categorias.map(this.renderCategoria)}
           </div><hr />
@@ -140,12 +131,26 @@ class Produtos extends Component {
               style={{ marginTop: 5, width: '100%' }}
               className='btn btn-primary'
             >Adicionar</button>
-          </div>
+          </div><hr />
+          <Link
+            to='/produtos/novo'
+            className='btn btn-success'
+            style={{ width: '100%', marginBottom: 10 }}
+          >Novo Produto</Link>
         </div>
         <div className='col-md-9'>
-          <h5 style={{ marginTop: 5 }}>Produtos</h5><hr />
+          <h4 style={{ marginTop: 5 }} className='col-6'>Produtos</h4><hr />
           <Route exact path={match.url} component={Home} />
-          <Route exact path={match.url + '/categoria/:catId'} component={Categoria} />
+          <Route exact path={match.url + '/novo'} render={props => {
+            return (
+              <ProdutoNovo
+                {...props}
+                categorias={categorias}
+                addProduto={this.props.addProduto}
+              />
+            )
+          }} />
+          <Route exact path={match.url + '/categoria/:catId'} render={props => <Categoria {...props} editProduto={this.props.editProduto}/>} />
         </div>
       </div>
     )

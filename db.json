@@ -27,14 +27,50 @@
     {
       "id": 5,
       "nome": "Pá",
-      "quantidade": 14,
-      "categoria": 3
+      "categoria": 3,
+      "quantidade": 16
     },
     {
       "id": 6,
       "nome": "Pão de Forma",
       "quantidade": 20,
       "categoria": 2
+    },
+    {
+      "id": 7,
+      "nome": "Sabonete",
+      "categoria": "1",
+      "quantidade": 4
+    },
+    {
+      "id": 8,
+      "nome": "Hamburguer",
+      "categoria": "2",
+      "quantidade": 5
+    },
+    {
+      "id": 9,
+      "nome": "Essencial",
+      "categoria": "4",
+      "quantidade": 5
+    },
+    {
+      "id": 10,
+      "nome": "Sr N",
+      "categoria": "4",
+      "quantidade": 15
+    },
+    {
+      "nome": "Kaiak",
+      "categoria": "4",
+      "quantidade": "33",
+      "id": 11
+    },
+    {
+      "id": 12,
+      "nome": "Bala de Morango",
+      "categoria": "5",
+      "quantidade": 99
     }
   ],
   "categorias": [
@@ -49,6 +85,14 @@
     {
       "id": 3,
       "nome": "Utilidades"
+    },
+    {
+      "nome": "Perfumaria",
+      "id": 4
+    },
+    {
+      "nome": "Bomboniere",
+      "id": 5
     }
   ]
 }
